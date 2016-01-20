@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.006000;
+use 5.010001;
 
 use ExtUtils::MakeMaker;
 
@@ -14,18 +14,16 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "PERLANCAR-Module-List",
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.006000",
+  "MIN_PERL_VERSION" => "5.010001",
   "NAME" => "PERLANCAR::Module::List",
-  "PREREQ_PM" => {
-    "warnings" => 0
-  },
+  "PREREQ_PM" => {},
   "TEST_REQUIRES" => {
     "File::Spec" => 0,
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
     "Test::More" => 0
   },
-  "VERSION" => "0.003002",
+  "VERSION" => "0.003003",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -36,8 +34,7 @@ my %FallbackPrereqs = (
   "File::Spec" => 0,
   "IO::Handle" => 0,
   "IPC::Open3" => 0,
-  "Test::More" => 0,
-  "warnings" => 0
+  "Test::More" => 0
 );
 
 

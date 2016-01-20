@@ -1,8 +1,9 @@
 package PERLANCAR::Module::List;
 
-our $DATE = '2016-01-20'; # DATE
-our $VERSION = '0.003002'; # VERSION
+our $DATE = '2016-01-21'; # DATE
+our $VERSION = '0.003003'; # VERSION
 
+use 5.010001;
 #IFUNBUILT
 # use strict;
 # use warnings;
@@ -52,7 +53,7 @@ sub list_modules($$) {
 				if(($list_modules && $entry =~ $pm_rx) ||
 						($list_pod &&
 							$entry =~ $pod_rx)) {
-					$results{$prefix.$1} = $return_path ? "$dir/$entry" : undef;
+					$results{$prefix.$1} //= $return_path ? "$dir/$entry" : undef;
 				} elsif(($list_prefixes || $recurse) &&
 						($entry ne '.' && $entry ne '..') &&
 						$entry =~ $dir_rx &&
@@ -60,7 +61,7 @@ sub list_modules($$) {
 							$entry)) {
 					my $newpfx = $prefix.$entry."::";
 					next if exists $seen_prefixes{$newpfx};
-					$results{$newpfx} = $return_path ? "$dir/$entry/" : undef
+					$results{$newpfx} //= $return_path ? "$dir/$entry/" : undef
 						if $list_prefixes;
 					push @prefixes, $newpfx if $recurse;
 				}
@@ -93,7 +94,7 @@ PERLANCAR::Module::List - Like Module::List, but with lower startup overhead
 
 =head1 VERSION
 
-This document describes version 0.003002 of PERLANCAR::Module::List (from Perl distribution PERLANCAR-Module-List), released on 2016-01-20.
+This document describes version 0.003003 of PERLANCAR::Module::List (from Perl distribution PERLANCAR-Module-List), released on 2016-01-21.
 
 =head1 DESCRIPTION
 
