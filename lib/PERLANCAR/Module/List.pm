@@ -1,7 +1,7 @@
 package PERLANCAR::Module::List;
 
-our $DATE = '2015-08-11'; # DATE
-our $VERSION = '0.003001'; # VERSION
+our $DATE = '2016-01-20'; # DATE
+our $VERSION = '0.003002'; # VERSION
 
 #IFUNBUILT
 # use strict;
@@ -31,6 +31,7 @@ sub list_modules($$) {
 	my $use_pod_dir = $options->{use_pod_dir};
 	return {} unless $list_modules || $list_prefixes || $list_pod;
 	my $recurse = $options->{recurse};
+	my $return_path = $options->{return_path};
 	my @prefixes = ($prefix);
 	my %seen_prefixes;
 	my %results;
@@ -51,7 +52,7 @@ sub list_modules($$) {
 				if(($list_modules && $entry =~ $pm_rx) ||
 						($list_pod &&
 							$entry =~ $pod_rx)) {
-					$results{$prefix.$1} = undef;
+					$results{$prefix.$1} = $return_path ? "$dir/$entry" : undef;
 				} elsif(($list_prefixes || $recurse) &&
 						($entry ne '.' && $entry ne '..') &&
 						$entry =~ $dir_rx &&
@@ -59,7 +60,7 @@ sub list_modules($$) {
 							$entry)) {
 					my $newpfx = $prefix.$entry."::";
 					next if exists $seen_prefixes{$newpfx};
-					$results{$newpfx} = undef
+					$results{$newpfx} = $return_path ? "$dir/$entry/" : undef
 						if $list_prefixes;
 					push @prefixes, $newpfx if $recurse;
 				}
@@ -92,20 +93,33 @@ PERLANCAR::Module::List - Like Module::List, but with lower startup overhead
 
 =head1 VERSION
 
-This document describes version 0.003001 of PERLANCAR::Module::List (from Perl distribution PERLANCAR-Module-List), released on 2015-08-11.
+This document describes version 0.003002 of PERLANCAR::Module::List (from Perl distribution PERLANCAR-Module-List), released on 2016-01-20.
 
 =head1 DESCRIPTION
 
 This module is a fork of L<Module::List> 0.003. It's exactly like Module::List,
-except that it strips the usage of L<Exporter>, L<IO::Dir>, L<Carp>,
-L<File::Spec>, with the goal of saving a few milliseconds (a casual test on my
-PC results in 11ms vs 39ms).
+except for the following differences:
+
+=over
+
+=item * lower startup overhead (with some caveats)
+
+It strips the usage of L<Exporter>, L<IO::Dir>, L<Carp>, L<File::Spec>, with the
+goal of saving a few milliseconds (a casual test on my PC results in 11ms vs
+39ms).
+
+Path separator a hard-coded C</>.
+
+=item * Recognize C<return_path> option
+
+Normally the returned hash has C<undef> as the values. With this option set to
+true, the values will contain the path instead. Useful if you want to collect
+all the paths, instead of having to use L<Module::Path> or L<Module::Path::More>
+for each module again.
+
+=back
 
 =for Pod::Coverage .+
-
-=head1 SEE ALSO
-
-L<Module::List>
 
 =head1 HOMEPAGE
 
@@ -123,13 +137,17 @@ When submitting a bug or request, please include a test-file or a
 patch to an existing test-file that illustrates the bug or desired
 feature.
 
+=head1 SEE ALSO
+
+L<Module::List>
+
 =head1 AUTHOR
 
 perlancar <perlancar@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2015 by perlancar@cpan.org.
+This software is copyright (c) 2016 by perlancar@cpan.org.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
